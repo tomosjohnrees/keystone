@@ -1,0 +1,107 @@
+{
+  "info": {
+    "name": "Keystone API",
+    "description": "Postman collection for the Keystone mortgage application API.\n\nFlow:\n1. `Create Mortgage Application` — captures the new application's `id` into the `application_id` collection variable.\n2. `Get Mortgage Application` — fetches the application by id.\n3. `Get Assessment` — fetches the affordability assessment for that application. Status begins as `pending` and becomes `completed` once the background job runs.\n\nSet the `base_url` environment variable (defaults to `http://localhost:3000`).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "application_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/up",
+          "host": ["{{base_url}}"],
+          "path": ["up"]
+        },
+        "description": "Returns 200 if the app is booted successfully."
+      },
+      "response": []
+    },
+    {
+      "name": "Create Mortgage Application",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 201', function () {",
+              "  pm.response.to.have.status(201);",
+              "});",
+              "",
+              "const body = pm.response.json();",
+              "if (body && body.id) {",
+              "  pm.collectionVariables.set('application_id', body.id);",
+              "  console.log('Saved application_id =', body.id);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mortgage_application\": {\n    \"annual_income\": 65000,\n    \"monthly_expenses\": 1200,\n    \"deposit_amount\": 40000,\n    \"property_value\": 280000,\n    \"term_years\": 25\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/mortgage_applications",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "mortgage_applications"]
+        },
+        "description": "Creates a mortgage application and queues an affordability assessment. The response `id` is auto-saved to the `application_id` collection variable for the follow-up requests."
+      },
+      "response": []
+    },
+    {
+      "name": "Get Mortgage Application",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/v1/mortgage_applications/{{application_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "mortgage_applications", "{{application_id}}"]
+        },
+        "description": "Fetches the mortgage application by id."
+      },
+      "response": []
+    },
+    {
+      "name": "Get Assessment",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/v1/mortgage_applications/{{application_id}}/assessment",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "mortgage_applications", "{{application_id}}", "assessment"]
+        },
+        "description": "Fetches the affordability assessment for a mortgage application. Status will be `pending` until the background job runs, then `completed` (or `failed` on error)."
+      },
+      "response": []
+    }
+  ]
+}
