@@ -1,6 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe MortgageApplication, type: :model do
+  let(:application) do
+    build(
+      :mortgage_application,
+      annual_income:    60_000,
+      monthly_expenses: 1_500,
+      deposit_amount:   50_000,
+      property_value:   250_000
+    )
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:annual_income) }
     it { is_expected.to validate_presence_of(:monthly_expenses) }
@@ -50,6 +60,24 @@ RSpec.describe MortgageApplication, type: :model do
           expect(application.errors[:deposit_amount]).to include('cannot exceed property value')
         end
       end
+    end
+  end
+
+  describe '#loan_amount' do
+    it 'returns property_value minus deposit_amount' do
+      expect(application.loan_amount).to eq(200_000)
+    end
+  end
+
+  describe '#monthly_income' do
+    it 'returns annual_income divided by twelve' do
+      expect(application.monthly_income).to eq(5_000)
+    end
+  end
+
+  describe '#disposable_income' do
+    it 'returns monthly_income minus monthly_expenses' do
+      expect(application.disposable_income).to eq(3_500)
     end
   end
 end

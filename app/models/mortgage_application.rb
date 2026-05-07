@@ -20,6 +20,18 @@ class MortgageApplication < ApplicationRecord
 
   validate :deposit_cannot_exceed_property_value
 
+  def loan_amount
+    property_value - deposit_amount
+  end
+
+  def monthly_income
+    annual_income / 12
+  end
+
+  def disposable_income
+    monthly_income - monthly_expenses
+  end
+
   private
 
   def deposit_cannot_exceed_property_value
