@@ -2,6 +2,8 @@ class MortgageApplication < ApplicationRecord
   MIN_TERM_YEARS = 1
   MAX_TERM_YEARS = 40
 
+  has_one :assessment
+
   validates :annual_income, :property_value,
             presence: true,
             numericality: { greater_than: 0 }
