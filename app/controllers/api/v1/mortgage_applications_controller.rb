@@ -2,7 +2,9 @@ module Api
   module V1
     class MortgageApplicationsController < BaseController
       def create
-        application = MortgageApplication.create!(application_params)
+        application = MortgageApplication.transaction do
+          MortgageApplication.create!(application_params).tap(&:create_assessment!)
+        end
         render json: MortgageApplicationSerializer.new(application), status: :created
       end
 

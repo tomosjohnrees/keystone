@@ -10,9 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_07_140612) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_07_145754) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "assessments", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "decision"
+    t.decimal "dti", precision: 8, scale: 2
+    t.text "error_message"
+    t.text "explanation"
+    t.decimal "ltv", precision: 8, scale: 2
+    t.decimal "max_borrowing", precision: 12, scale: 2
+    t.bigint "mortgage_application_id", null: false
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.index ["mortgage_application_id"], name: "index_assessments_on_mortgage_application_id", unique: true
+  end
 
   create_table "mortgage_applications", force: :cascade do |t|
     t.decimal "annual_income", precision: 12, scale: 2, null: false
@@ -23,4 +37,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_140612) do
     t.integer "term_years", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_foreign_key "assessments", "mortgage_applications"
 end

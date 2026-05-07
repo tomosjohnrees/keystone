@@ -33,6 +33,7 @@ services:
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgres://postgres:postgres@db:5432/keystone_development
+      QUEUE_DATABASE_URL: postgres://postgres:postgres@db:5432/keystone_development_queue
     tty: true
     stdin_open: true
 
@@ -52,6 +53,7 @@ services:
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgres://postgres:postgres@db:5432/keystone_development
+      QUEUE_DATABASE_URL: postgres://postgres:postgres@db:5432/keystone_development_queue
     command: ["bin/jobs"]
     profiles: ["jobs"]
 

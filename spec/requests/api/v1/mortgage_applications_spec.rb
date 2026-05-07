@@ -36,6 +36,15 @@ RSpec.describe 'Api::V1::MortgageApplications', type: :request do
           MortgageApplicationSerializer.new(application).as_json
         )
       end
+
+      it 'creates an assessment in pending state' do
+        expect { create_request }.to change(Assessment, :count).by(1)
+        expect(Assessment.last).to be_pending
+      end
+
+      it 'enqueues an AssessAffordabilityJob' do
+        expect { create_request }.to have_enqueued_job(AssessAffordabilityJob)
+      end
     end
 
     context 'when the mortgage_application key is missing' do
