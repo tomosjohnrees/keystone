@@ -46,4 +46,10 @@ group :development, :test do
 
   # RSpec test framework for Rails [https://github.com/rspec/rspec-rails]
   gem "rspec-rails"
+
+  # Test data factories [https://github.com/thoughtbot/factory_bot_rails]
+  gem "factory_bot_rails"
+
+  # One-liner matchers for common Rails validations [https://github.com/thoughtbot/shoulda-matchers]
+  gem "shoulda-matchers", "~> 6.0"
 end
