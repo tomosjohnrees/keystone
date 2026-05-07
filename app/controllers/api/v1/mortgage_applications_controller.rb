@@ -6,6 +6,11 @@ module Api
         render json: MortgageApplicationSerializer.new(application), status: :created
       end
 
+      def show
+        application = MortgageApplication.find(params[:id])
+        render json: MortgageApplicationSerializer.new(application)
+      end
+
       private
 
       def application_params

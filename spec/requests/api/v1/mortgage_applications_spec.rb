@@ -51,4 +51,21 @@ RSpec.describe 'Api::V1::MortgageApplications', type: :request do
       end
     end
   end
+
+  describe 'GET /api/v1/mortgage_applications/:id' do
+    let(:application) { create(:mortgage_application) }
+
+    it 'returns 200 OK' do
+      get "/api/v1/mortgage_applications/#{application.id}"
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'returns the serialized application in the response body' do
+      get "/api/v1/mortgage_applications/#{application.id}"
+
+      expect(response.parsed_body).to eq(
+        MortgageApplicationSerializer.new(application).as_json
+      )
+    end
+  end
 end
