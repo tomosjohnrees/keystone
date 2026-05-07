@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      # endpoints land here in later issues
+      resources :mortgage_applications, only: [ :create ]
     end
   end
 
