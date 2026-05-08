@@ -51,5 +51,5 @@ group :development, :test do
   gem "factory_bot_rails"
 
   # One-liner matchers for common Rails validations [https://github.com/thoughtbot/shoulda-matchers]
-  gem "shoulda-matchers", "~> 6.0"
+  gem "shoulda-matchers", "~> 7.0"
 end
