@@ -21,10 +21,11 @@ help: ## Show this help
 ##@ Docker lifecycle
 
 .PHONY: setup
-setup: ## Build the dev image, install gems, and prepare the database
+setup: ## Build the dev image, install gems, and prepare the development and test databases
 	$(DC) build
 	$(DC) run --rm $(WEB) bundle install
 	$(DC) run --rm $(WEB) bin/rails db:prepare
+	$(DC) run --rm -e RAILS_ENV=test $(WEB) bin/rails db:prepare
 
 .PHONY: build
 build: ## Rebuild the dev image
