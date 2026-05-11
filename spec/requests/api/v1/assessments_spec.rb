@@ -8,7 +8,8 @@ RSpec.describe 'Api::V1::Assessments', type: :request do
       let!(:assessment) { application.create_assessment! }
 
       it 'returns 200 with the assessment in pending state' do
-        get "/api/v1/mortgage_applications/#{application.id}/assessment"
+        get "/api/v1/mortgage_applications/#{application.id}/assessment",
+            headers: api_auth_headers
 
         expect(response).to have_http_status(:ok)
         body = response.parsed_body
@@ -26,7 +27,8 @@ RSpec.describe 'Api::V1::Assessments', type: :request do
       end
 
       it 'returns 200 with the populated result' do
-        get "/api/v1/mortgage_applications/#{application.id}/assessment"
+        get "/api/v1/mortgage_applications/#{application.id}/assessment",
+            headers: api_auth_headers
 
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body).to eq(
@@ -37,7 +39,7 @@ RSpec.describe 'Api::V1::Assessments', type: :request do
 
     context 'when the application does not exist' do
       it 'returns 404' do
-        get '/api/v1/mortgage_applications/0/assessment'
+        get '/api/v1/mortgage_applications/0/assessment', headers: api_auth_headers
         expect(response).to have_http_status(:not_found)
       end
     end

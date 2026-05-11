@@ -1,13 +1,28 @@
 {
   "info": {
     "name": "Keystone API",
-    "description": "Postman collection for the Keystone mortgage application API.\n\nFlow:\n1. `Create Mortgage Application` — captures the new application's `id` into the `application_id` collection variable.\n2. `Get Mortgage Application` — fetches the application by id.\n3. `Get Assessment` — fetches the affordability assessment for that application. Status begins as `pending` and becomes `completed` once the background job runs.\n\nSet the `base_url` environment variable (defaults to `http://localhost:3000`).",
+    "description": "Postman collection for the Keystone mortgage application API.\n\nFlow:\n1. `Create Mortgage Application` — captures the new application's `id` into the `application_id` collection variable.\n2. `Get Mortgage Application` — fetches the application by id.\n3. `Get Assessment` — fetches the affordability assessment for that application. Status begins as `pending` and becomes `completed` once the background job runs.\n\nSet the `base_url` environment variable (defaults to `http://localhost:3000`) and `api_token` to match the configured API token. Development defaults to `development-api-token` unless `KEYSTONE_API_TOKEN` is set.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{api_token}}",
+        "type": "string"
+      }
+    ]
   },
   "variable": [
     {
       "key": "base_url",
       "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "api_token",
+      "value": "development-api-token",
       "type": "string"
     },
     {
@@ -20,6 +35,9 @@
     {
       "name": "Health Check",
       "request": {
+        "auth": {
+          "type": "noauth"
+        },
         "method": "GET",
         "header": [],
         "url": {

@@ -16,6 +16,7 @@ RSpec.describe 'Api::V1::MortgageApplications', type: :request do
       subject(:create_request) do
         post '/api/v1/mortgage_applications',
              params: { mortgage_application: valid_attributes },
+             headers: api_auth_headers,
              as: :json
       end
 
@@ -51,6 +52,7 @@ RSpec.describe 'Api::V1::MortgageApplications', type: :request do
       it 'returns 400 with a bad_request error body' do
         post '/api/v1/mortgage_applications',
              params: {},
+             headers: api_auth_headers,
              as: :json
 
         expect(response).to have_http_status(:bad_request)
@@ -65,12 +67,12 @@ RSpec.describe 'Api::V1::MortgageApplications', type: :request do
     let(:application) { create(:mortgage_application) }
 
     it 'returns 200 OK' do
-      get "/api/v1/mortgage_applications/#{application.id}"
+      get "/api/v1/mortgage_applications/#{application.id}", headers: api_auth_headers
       expect(response).to have_http_status(:ok)
     end
 
     it 'returns the serialized application in the response body' do
-      get "/api/v1/mortgage_applications/#{application.id}"
+      get "/api/v1/mortgage_applications/#{application.id}", headers: api_auth_headers
 
       expect(response.parsed_body).to eq(
         MortgageApplicationSerializer.new(application).as_json

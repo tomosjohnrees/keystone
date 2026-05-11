@@ -47,6 +47,8 @@ Rails.application.configure do
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = { database: { writing: :queue } }
 
+  config.x.keystone.api_token = ENV.fetch("KEYSTONE_API_TOKEN", "development-api-token")
+
   # Highlight code that triggered redirect in logs.
   config.action_dispatch.verbose_redirect_logs = true
 

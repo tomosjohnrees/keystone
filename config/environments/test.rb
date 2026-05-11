@@ -28,6 +28,8 @@ Rails.application.configure do
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
 
+  config.x.keystone.api_token = "test-api-token"
+
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 

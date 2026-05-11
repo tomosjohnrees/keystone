@@ -13,7 +13,8 @@ and `make`.
 
 1. Drop the team's `config/master.key` into your local checkout (it is
    gitignored and bind-mounted into the container). Alternatively, copy
-   `.env.example` to `.env` and set `RAILS_MASTER_KEY` there.
+   `.env.example` to `.env` and set `RAILS_MASTER_KEY` there. Development
+   uses `development-api-token` unless `KEYSTONE_API_TOKEN` is set.
 2. Run `make setup` to build the image, install gems, and prepare the
    database.
 3. Run `make up` to start the app on <http://localhost:3000>.
@@ -32,6 +33,16 @@ and `make`.
 ## API
 
 All endpoints live under `/api/v1/` and accept and return JSON.
+They require a bearer token:
+
+```http
+Authorization: Bearer <KEYSTONE_API_TOKEN>
+```
+
+Missing, malformed, or incorrect tokens return `401` with
+`{ "error": "unauthorized" }`. The `/up` health check is not under
+`/api/v1/` and remains unauthenticated. Development defaults to
+`development-api-token`; production requires `KEYSTONE_API_TOKEN`.
 
 ### `POST /api/v1/mortgage_applications`
 
@@ -40,6 +51,7 @@ transaction and enqueued for background processing.
 
 ```bash
 curl -X POST http://localhost:3000/api/v1/mortgage_applications \
+  -H "Authorization: Bearer ${KEYSTONE_API_TOKEN:-development-api-token}" \
   -H "Content-Type: application/json" \
   -d '{
     "mortgage_application": {
@@ -137,7 +149,12 @@ The flow on `POST /api/v1/mortgage_applications`:
   income multiple of 4.5×, positive disposable income — these are common
   UK heuristics, not real underwriting. They live as constants at the
   top of `Affordability` and are intended to be replaced.
-- **Assumption: no auth.** Every endpoint is open. See "Scaling" below.
+- **Single API bearer token.** `/api/v1/*` expects
+  `Authorization: Bearer <token>`. Development defaults to
+  `development-api-token`, test uses `test-api-token`, and production
+  fails boot unless `KEYSTONE_API_TOKEN` is set. This is simple
+  machine-to-machine authentication, not per-user authorization, audit
+  trails, scopes, or token rotation.
 
 ## How the assessment logic works
 
